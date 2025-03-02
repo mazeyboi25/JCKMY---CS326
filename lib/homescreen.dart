@@ -10,10 +10,10 @@ class HomeScreen extends StatelessWidget {
         title: const Text("Home Screen"),
         actions: [
           IconButton(
-            icon: const Icon(Icons.logout),
+            icon: const Icon(Icons.person),
             onPressed: () {
-              // Navigate back to login screen or handle logout
-              Navigator.pushReplacementNamed(context, "/login");
+              // Navigate to profile screen
+              Navigator.pushNamed(context, "/profile");
             },
           ),
         ],
