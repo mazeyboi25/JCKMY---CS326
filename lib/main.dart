@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'log-in.dart';
-import 'sign-up.dart';
+import 'log_in.dart';
+import 'sign_up.dart';
+import 'profile.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,7 +19,9 @@ class MyApp extends StatelessWidget {
       home: SplashScreen(),
       routes: {
     "/signup": (context) => SignUpScreen(),
-    "/login": (context) => LoginScreen(),
+    "/login": (context) => const LoginScreen(),
+    "/home": (context) => const HomeScreen(),
+    "/profile": (context) => const ProfileScreen(), 
       }
     );
   }
@@ -55,7 +58,7 @@ class _SplashScreenState extends State<SplashScreen>
     Future.delayed(Duration(seconds: 3), () {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => HomeScreen()), 
+        MaterialPageRoute(builder: (context) => IntroScreen()), 
       );
     });
   }
@@ -72,17 +75,29 @@ class _SplashScreenState extends State<SplashScreen>
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('assets/app_CP.png'), // Background image
+            image: AssetImage('assets/app_CP.png'),
             fit: BoxFit.cover,
           ),
         ),
         child: Center(
           child: ScaleTransition(
             scale: _animation,
-            child: Image.asset(
-              'assets/Logo.png',
-              width: 300,
-              height: 300,
+            child: Text(
+              "FarmFlow",
+  style: TextStyle(
+    fontSize: 50,
+    fontWeight: FontWeight.bold,
+    color: const Color.fromARGB(255, 255, 255, 255),
+    fontFamily: "Roboto", 
+    letterSpacing: 1.0,
+    shadows: [
+      Shadow(
+        blurRadius: 1.0, // Controls the blur effect
+        color: Colors.black.withOpacity(0.6), // Shadow color with transparency
+        offset: Offset(0, 5), // Moves shadow right and down
+      ),
+    ],
+  ),
             ),
           ),
         ),
@@ -185,7 +200,7 @@ class HomeScreen extends StatelessWidget {
                   ElevatedButton(
                     onPressed: () {
                       Navigator.push(
-                          context, MaterialPageRoute(builder: (context) => IntroScreen()));
+                          context, MaterialPageRoute(builder: (context) => SignUpScreen()));
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color.fromARGB(255, 26, 104, 214),
@@ -317,7 +332,7 @@ class _IntroScreenState extends State<IntroScreen> {
                   onSwipe: () {
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => SignUpScreen()),
+                      MaterialPageRoute(builder: (context) => HomeScreen()),
                     );
                   },
                 ),
@@ -338,18 +353,21 @@ class SwipeButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Align(
-      alignment: const Alignment(0,1), // Adjust this value to move it higher or lower
+      alignment: const Alignment(0, 1), // Adjust this value to move it higher or lower
       child: Padding(
         padding: const EdgeInsets.only(bottom: 40), // Adjust this value to shift it up/down
         child: GestureDetector(
-          onHorizontalDragEnd: (details) {
-            onSwipe();
+          onHorizontalDragUpdate: (details) {
+            if (details.primaryDelta != null && details.primaryDelta! > 10) {
+              // Detects if swipe movement is strong enough (adjust threshold if needed)
+              onSwipe();
+            }
           },
           child: Container(
             width: 370,
             height: 73,
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.8),
+              color: Colors.white.withOpacity(0.5),
               borderRadius: BorderRadius.circular(35),
               border: Border.all(color: const Color.fromARGB(195, 255, 255, 255)),
             ),
