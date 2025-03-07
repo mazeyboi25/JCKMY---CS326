@@ -45,11 +45,14 @@ class _VerificationScreenState extends State<VerificationScreen> {
       var responseData = jsonDecode(response.body);
 
       if (response.statusCode == 200) {
-        _showMessage("Verification successful! Redirecting...");
-        Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => IntroScreen2()),
-          (route) => false,
-        );
+  _showMessage("Verification successful! Redirecting...");
+
+  Future.delayed(Duration(seconds: 2), () {
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(builder: (context) => IntroScreen2()),
+      (route) => false,
+    );
+  });
       } else {
         _showMessage(responseData['message'] ?? "Invalid verification code", isError: true);
         _codeController.clear();
