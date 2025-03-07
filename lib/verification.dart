@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'sign_up_introscreen.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class VerificationScreen extends StatefulWidget {
   final String email;
@@ -72,25 +73,52 @@ class _VerificationScreenState extends State<VerificationScreen> {
   });
 
   try {
+    // Retrieve stored email from SharedPreferences
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? storedEmail = prefs.getString('email');
+
+    if (storedEmail == null || storedEmail.isEmpty) {
+      _showMessage("No stored email found. Please sign in again.", isError: true);
+      setState(() {
+        _canResend = true;
+      });
+      return;
+    }
+
+    _showMessage("Sending a new code to $storedEmail...");
+
     var response = await http.post(
       Uri.parse("https://tionsns.pythonanywhere.com/api/resend/"),
       headers: {
         "Content-Type": "application/json",
         "Accept": "application/json"
       },
-      body: jsonEncode({"email": widget.email}),
+      body: jsonEncode({"email": storedEmail}),
     );
+
+    print("Response status: ${response.statusCode}");
+    print("Response body: ${response.body}");
 
     var responseData = jsonDecode(response.body);
 
     if (response.statusCode == 200) {
-      _showMessage(responseData['message'] ?? "A new verification code has been sent to ${widget.email}");
+      _showMessage(responseData['message'] ?? "Resent verification code! $storedEmail");
     } else {
       _showMessage(responseData['message'] ?? "Failed to resend code", isError: true);
     }
   } catch (e) {
+    print("Error: $e");
     _showMessage("An error occurred. Please try again.", isError: true);
   }
+
+  // Re-enable the resend button after 15 seconds
+  Future.delayed(Duration(seconds: 15), () {
+    if (mounted) {
+      setState(() {
+        _canResend = true;
+      });
+    }
+  });
 
   // Re-enable the resend button after 15 seconds
   Future.delayed(Duration(seconds: 15), () {
@@ -152,7 +180,7 @@ Widget build(BuildContext context) {
               Text(
                 "Enter the verification code sent to ${widget.email}",
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+                style: TextStyle(fontSize: 14, color: const Color.fromARGB(255, 0, 0, 0)),
               ),
               const SizedBox(height: 20),
               Pinput(
@@ -168,6 +196,14 @@ Widget build(BuildContext context) {
                     color: Colors.grey[300],
                     border: Border.all(color: Colors.grey),
                     borderRadius: BorderRadius.circular(10),
+                    boxShadow: [
+                                BoxShadow(
+                                color: Colors.black.withOpacity(0.2), 
+                                offset: Offset(-5, 6), 
+                                blurRadius: 6,
+                                spreadRadius: 1, 
+                                  ),
+                                ],
                   ),
                 ),
               ),
@@ -205,9 +241,9 @@ Widget build(BuildContext context) {
                 onPressed: _canResend ? _resendCode : null,
                 child: Text(
                   "Resend Code",
-                  style: TextStyle(
+                  style: GoogleFonts.mulish(
+                    fontWeight: FontWeight.bold,
                     color: _canResend ? Colors.blue : const Color.fromARGB(255, 0, 0, 0),
-                    decoration: TextDecoration.underline,
                   ),
                 ),
               ),

@@ -79,14 +79,14 @@ Widget build(BuildContext context) {
             children: [
               Image.asset(
                 'assets/Farmflow_logo.png',
-                width: 150,
-                height: 150,
+                width: 120,
+                height: 120,
               ),
-              const SizedBox(height: 0), // Space between logo and text
+              const SizedBox(height: 2), // Space between logo and text
               Text(
                 "FarmFlow",
                 style: GoogleFonts.audiowide(
-                  fontSize: 50,
+                  fontSize: 45,
                   fontWeight: FontWeight.bold,
                   color: Color(0xFF94CA65),
                 ),

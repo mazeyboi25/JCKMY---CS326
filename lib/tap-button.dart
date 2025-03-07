@@ -35,7 +35,7 @@ Widget build(BuildContext context) {
           ),
           alignment: Alignment.center,
           child: Text(
-            "Tap to continue",
+            "TAP TO CONTINUE",
             style: GoogleFonts.mulish(
               fontSize: 16,
               fontWeight: FontWeight.bold,

@@ -207,15 +207,15 @@ Widget build(BuildContext context) {
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color.fromARGB(255, 2, 48, 12),
-                      padding: EdgeInsets.symmetric(horizontal: 45, vertical: 13),
+                      padding: EdgeInsets.symmetric(horizontal: 40, vertical: 13),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30),
                         side: BorderSide(color: Colors.white, width: 1),
                       ),
                     ),
                     child: Text(
-                      "Log In",
-                      style: TextStyle(
+                      "LOG IN",
+                      style: GoogleFonts.mulish(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
@@ -241,15 +241,15 @@ Widget build(BuildContext context) {
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color.fromARGB(255, 8, 55, 39),
-                      padding: EdgeInsets.symmetric(horizontal: 38, vertical: 13),
+                      padding: EdgeInsets.symmetric(horizontal: 32, vertical: 13),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30),
                         side: BorderSide(color: Colors.white, width: 1),
                       ),
                     ),
                     child: Text(
-                      "Sign Up",
-                      style: TextStyle(
+                      "SIGN UP",
+                      style: GoogleFonts.mulish(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
