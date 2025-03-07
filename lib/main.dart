@@ -78,7 +78,7 @@ Widget build(BuildContext context) {
             mainAxisAlignment: MainAxisAlignment.center, // Center align vertically
             children: [
               Image.asset(
-                'assets/Logo.png',
+                'assets/Farmflow_logo.png',
                 width: 150,
                 height: 150,
               ),
@@ -86,7 +86,7 @@ Widget build(BuildContext context) {
               Text(
                 "FarmFlow",
                 style: GoogleFonts.audiowide(
-                  fontSize: 39,
+                  fontSize: 50,
                   fontWeight: FontWeight.bold,
                   color: Color(0xFF94CA65),
                 ),

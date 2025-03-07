@@ -77,7 +77,7 @@ Widget build(BuildContext context) {
                 height: 114, // Adjusted for better spacing
                 color: const Color(0xFF02270A),
                 child: Padding(
-                  padding: const EdgeInsets.only(left: 0, top: 14), // Moves everything left
+                  padding: const EdgeInsets.only(left: 5, top: 37), // Moves everything left
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -85,11 +85,11 @@ Widget build(BuildContext context) {
                         children: [
                           /// Logo positioned further to the left
                           Padding(
-                            padding: const EdgeInsets.only(left: 0), // Adjust as needed
+                            padding: const EdgeInsets.only(right: 5), 
                             child: Image.asset(
-                              'assets/Logo.png',
-                              width: 100,
-                              height: 100,
+                              'assets/Farmflow_logo.png',
+                              width: 60,
+                              height: 60,
                             ),
                           ),
                           Text(
@@ -97,7 +97,7 @@ Widget build(BuildContext context) {
                             style: GoogleFonts.audiowide(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
-                              color: Colors.lightGreenAccent,
+                              color: const Color.fromARGB(255, 255, 255, 255),
                             ),
                           ),
                         ],

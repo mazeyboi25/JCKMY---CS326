@@ -57,11 +57,12 @@ flutter:
     - assets/sign_up_introscreen_elements/bottom_element2.png
     - assets/sign_up_introscreen_elements/top_element.png
     - assets/Farmflow_logo.png
+    - assets/VERIFICATION.png
     
 
 flutter_icons:
   android: true
   ios: true
   image_path: "assets/Farmflow_logo.png"  # Used for iOS and older Android versions
-  adaptive_icon_foreground: "assets/adaptive_icon_foreground.png"  # Foreground layer
-  adaptive_icon_background: "assets/adaptive_icon_background.png"  # Background layer
+  adaptive_icon_foreground: "assets/Farmflow_logo.png"  # Foreground layer
+  adaptive_icon_background: "#02270A"  # Background layer

@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:project_test/homescreen.dart';
-import 'sign_up.dart';
 
 class IntroScreen2 extends StatefulWidget {
   const IntroScreen2({super.key});

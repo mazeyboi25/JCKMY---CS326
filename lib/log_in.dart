@@ -212,11 +212,11 @@ Widget build(BuildContext context) {
           builder: (context, constraints) {
             return Stack(
               children: [
-  // Decorative Circles
-  Positioned(left: -100, top: -200, child: _decorativeCircle(340,Color.fromARGB(255, 7, 47, 33))), 
-  Positioned(top: -200, right: -80, child: _decorativeCircle(340,Color.fromARGB(255, 100, 137, 68))), 
-  Positioned(bottom: -170, left: -80, child: _decorativeCircle(300,Color.fromARGB(255, 100, 137, 68))), 
-  Positioned(right: -80, bottom: -180, child: _decorativeCircle(300,Color.fromARGB(255, 7, 47, 33))), 
+                // Decorative Circles
+                Positioned(left: -100, top: -200, child: _decorativeCircle(340, Color.fromARGB(255, 7, 47, 33))),
+                Positioned(top: -200, right: -80, child: _decorativeCircle(340, Color.fromARGB(255, 100, 137, 68))),
+                Positioned(bottom: -170, left: -80, child: _decorativeCircle(300, Color.fromARGB(255, 100, 137, 68))),
+                Positioned(right: -80, bottom: -180, child: _decorativeCircle(300, Color.fromARGB(255, 7, 47, 33))),
 
                 SingleChildScrollView(
                   child: ConstrainedBox(
@@ -228,15 +228,15 @@ Widget build(BuildContext context) {
                         children: [
                           // Logo & Title
                           Padding(
-                            padding: const EdgeInsets.only(top: 16, left: 30),
+                            padding: const EdgeInsets.only(top: 16, left: 23),
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start, 
+                              mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 Image.asset(
-                                  'assets/Logo.png',
-                                  height: 110,
+                                  'assets/Farmflow_logo.png',
+                                  height: 70,
                                 ),
-                                const SizedBox(width: 0),
+                                const SizedBox(width: 5),
                                 Text(
                                   "FarmFlow",
                                   style: GoogleFonts.audiowide(
@@ -249,7 +249,7 @@ Widget build(BuildContext context) {
                             ),
                           ),
 
-                          const SizedBox(height: 20), // Added spacing
+                          const SizedBox(height: 20),
 
                           // Form Fields
                           Padding(
@@ -262,55 +262,71 @@ Widget build(BuildContext context) {
                                 _buildPasswordField(),
 
                                 // Remember Me Checkbox
-                              Padding(
-  padding: const EdgeInsets.only(left: 0), 
-  child: Row(
-    mainAxisAlignment: MainAxisAlignment.start, 
-    children: [
-      Checkbox(
-        value: _rememberMe,
-        onChanged: (value) {
-          setState(() {
-            _rememberMe = value ?? false;
-          });
-        },
-        checkColor: Colors.black,
-        activeColor: Colors.white,
-      ),
-      const Text(
-        "Remember Me",
-        style: TextStyle(
-          color: Colors.black,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-    ],
-  ),
-),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Checkbox(
+                                        value: _rememberMe,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            _rememberMe = value ?? false;
+                                          });
+                                        },
+                                        checkColor: Colors.black,
+                                        activeColor: Colors.white,
+                                      ),
+                                      const Text(
+                                        "Remember Me",
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+
                                 const SizedBox(height: 10),
 
-                                // Login Button
-                                SizedBox(
-                                  width: 110,
-                                  height: 45,
-                                  child: ElevatedButton(
-                                    onPressed: _isLoading ? null : () => _login(context),
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: const Color.fromARGB(255, 2, 45, 11),
-                                      foregroundColor: Colors.white,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(25),
+                                // Login Button with Shadow
+                                Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(25), 
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.3), 
+                                        offset: Offset(-4, 4), 
+                                        blurRadius: 6,
+                                        spreadRadius: 1, 
                                       ),
-                                    ),
-                                    child: _isLoading
-                                        ? const CircularProgressIndicator(color: Colors.white)
-                                        : const Text(
-                                            "Login",
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold,
+                                    ],
+                                  ),
+                                  child: SizedBox(
+                                    width: 130,
+                                    height: 45,
+                                    child: ElevatedButton(
+                                      onPressed: _isLoading ? null : () => _login(context),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: const Color.fromARGB(255, 2, 45, 11),
+                                        foregroundColor: Colors.white,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(25), // Match shadow shape
+                                          side: BorderSide(color: Colors.white, width: 2),
+                                        ),
+                                        elevation: 0, // Disable default elevation to avoid double shadows
+                                      ),
+                                      child: _isLoading
+                                          ? const CircularProgressIndicator(color: Colors.white)
+                                          : Text(
+                                              "LOG IN",
+                                              style: GoogleFonts.mulish(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold,
+                                              ),
                                             ),
-                                          ),
+                                    ),
                                   ),
                                 ),
 
@@ -323,26 +339,25 @@ Widget build(BuildContext context) {
                                     );
                                   },
                                   child: const Text.rich(
-    TextSpan(
-      text: "Don't have an account? ",
-      style: TextStyle(
-        color: Colors.black,
-        fontSize: 14,
-      ),
-      children: [
-        TextSpan(
-          text: "Sign Up",
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            decoration: TextDecoration.underline,
-            decorationColor: Colors.black,
-          ),
-        ),
-      ],
-    ),
-  ),
-),
-
+                                    TextSpan(
+                                      text: "Don't have an account? ",
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 14,
+                                      ),
+                                      children: [
+                                        TextSpan(
+                                          text: "Sign Up",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            decoration: TextDecoration.underline,
+                                            decorationColor: Colors.black,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
                               ],
                             ),
                           ),
@@ -359,6 +374,7 @@ Widget build(BuildContext context) {
     ),
   );
 }
+
 
 Widget _decorativeCircle(double size, Color color) {
   return _showCircles

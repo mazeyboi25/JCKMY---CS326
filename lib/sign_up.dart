@@ -120,8 +120,8 @@ Widget build(BuildContext context) {
                           child: Column(
                             children: [
                               Image.asset(
-                                'assets/Logo.png', // Replace with actual logo path
-                                height: 150,
+                                'assets/Farmflow_logo.png', // Replace with actual logo path
+                                height: 70,
                               ), 
                               const Text(
                                 "Start your farming journey with us.",
@@ -132,11 +132,11 @@ Widget build(BuildContext context) {
                                 ),
                                 textAlign: TextAlign.left,
                               ),
-                              const SizedBox(height: 0),
+                              const SizedBox(height: 2),
                             ],
                           ),
                         ),
-                        const SizedBox(height: 10),
+                        const SizedBox(height: 9),
                         Center( // Centered input fields
                           child: Column(
                             children: [
@@ -152,7 +152,7 @@ Widget build(BuildContext context) {
                           child: ElevatedButton(
                             onPressed: signUpUser,
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.white,
+                              backgroundColor: const Color.fromARGB(255, 255, 255, 255),
                               foregroundColor: const Color(0xFF02270A),
                               padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 40),
                               shape: RoundedRectangleBorder(

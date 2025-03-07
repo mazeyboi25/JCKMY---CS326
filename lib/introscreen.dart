@@ -3,7 +3,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:project_test/sign_up.dart';
 import 'tap-button.dart';
 import 'log_in.dart';
-import 'sign_up_introscreen.dart';
 
 
 class IntroScreen extends StatefulWidget {
