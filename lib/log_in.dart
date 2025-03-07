@@ -1,8 +1,11 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'homescreen.dart';
+import 'sign_up.dart';
+
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -17,11 +20,39 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _isLoading = false;
   bool _isPasswordVisible = false;
   bool _rememberMe = false;
+  bool _showCircles = true; 
+  final FocusNode _focusNode = FocusNode();
+  final FocusNode _emailFocusNode = FocusNode();
+final FocusNode _passwordFocusNode = FocusNode();
+
 
   @override
   void initState() {
     super.initState();
+    _focusNode.addListener(_onFocusChange);
+    _emailFocusNode.addListener(_onFocusChange);
+  _passwordFocusNode.addListener(_onFocusChange);
     _loadSavedCredentials();
+    _emailController.addListener(() {
+    });
+  }
+
+  void _onFocusChange() {
+    setState(() {
+      _showCircles = !(_emailFocusNode.hasFocus || _passwordFocusNode.hasFocus);
+    });
+  }
+
+  @override
+  void dispose() {
+    _emailFocusNode.removeListener(_onFocusChange);
+  _passwordFocusNode.removeListener(_onFocusChange);
+    _focusNode.removeListener(_onFocusChange);
+    _emailFocusNode.dispose();
+  _passwordFocusNode.dispose();
+    _focusNode.dispose();
+    _emailController.dispose();
+    super.dispose();
   }
 
   Future<void> _loadSavedCredentials() async {
@@ -70,8 +101,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
       if (response.statusCode == 200) {
         _showMessage("Login Successful!");
+        await Future.delayed(Duration(seconds: 0));
         await _saveCredentials();
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen()));
+        Navigator.pushReplacement(
+          context, 
+          MaterialPageRoute(builder: (context) => HomeScreen()),
+        );
       } else {
         _showError(responseData['message'] ?? "Invalid email or password.");
       }
@@ -98,76 +133,29 @@ class _LoginScreenState extends State<LoginScreen> {
     ));
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
-          Image.asset("assets/bg.png", fit: BoxFit.cover),
-          SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 13.0, vertical: 40),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Center(child: Image.asset("assets/Logo.png", height: 150)),
-                  const SizedBox(height: 25),
-                  _buildTextField(_emailController, "Email"),
-                  _buildPasswordField(),
-                  Row(
-                    children: [
-                      Checkbox(
-                        value: _rememberMe,
-                        onChanged: (value) {
-                          setState(() {
-                            _rememberMe = value ?? false;
-                          });
-                        },
-                        checkColor: const Color.fromARGB(255, 0, 0, 0),
-                          activeColor: Colors.white,
-                      ),
-                      const Text("Remember Me", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))
-                    ],
-                  ),
-                  const SizedBox(height: 25),
-                  ElevatedButton(
-                    onPressed: _isLoading ? null : () => _login(context),
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-                    ),
-                    child: _isLoading
-                        ? CircularProgressIndicator(color: Colors.white)
-                        : const Text("Login", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pushNamed(context, "/signup");
-                    },
-                    child: const Text("Don't have an account? Sign Up", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold,fontSize: 17, decoration: TextDecoration.underline, decorationColor: Colors.white)),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildTextField(TextEditingController controller, String label) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
-      child: TextField(
-        controller: controller,
-        decoration: InputDecoration(
-          labelText: label,
-          filled: true,
-          fillColor: Colors.white.withOpacity(0.8),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-          contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+      child: Container(
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black26,
+              blurRadius: 10,
+              offset: Offset(-4, 1),
+            ),
+          ],
+        ),
+        child: TextField(
+          controller: controller,
+          focusNode: _emailFocusNode,
+          decoration: InputDecoration(
+            labelText: label,
+            filled: true,
+            fillColor: Colors.grey.shade300,
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+            contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+          ),
         ),
       ),
     );
@@ -176,25 +164,220 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _buildPasswordField() {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
-      child: TextField(
-        controller: _passwordController,
-        obscureText: !_isPasswordVisible,
-        decoration: InputDecoration(
-          labelText: "Password",
-          filled: true,
-          fillColor: Colors.white.withOpacity(0.8),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-          contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-          suffixIcon: IconButton(
-            icon: Icon(_isPasswordVisible ? Icons.visibility : Icons.visibility_off),
-            onPressed: () {
-              setState(() {
-                _isPasswordVisible = !_isPasswordVisible;
-              });
-            },
+      child: Container(
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black26,
+              blurRadius: 10,
+              offset: Offset(-2, 2),
+            ),
+          ],
+        ),
+        child: TextField(
+          controller: _passwordController,
+          focusNode: _passwordFocusNode,
+          obscureText: !_isPasswordVisible,
+          decoration: InputDecoration(
+            labelText: "Password",
+            filled: true,
+            fillColor: Colors.grey.shade300,
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+            contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+            suffixIcon: IconButton(
+              icon: Icon(_isPasswordVisible ? Icons.visibility : Icons.visibility_off),
+              onPressed: () {
+                setState(() {
+                  _isPasswordVisible = !_isPasswordVisible;
+                });
+              },
+            ),
           ),
         ),
       ),
     );
   }
+
+
+  @override
+Widget build(BuildContext context) {
+  return GestureDetector(
+    onTap: () {
+      FocusScope.of(context).unfocus(); // Dismiss the keyboard when tapping outside
+    },
+    child: Scaffold(
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return Stack(
+              children: [
+  // Decorative Circles
+  Positioned(left: -100, top: -200, child: _decorativeCircle(340,Color.fromARGB(255, 7, 47, 33))), 
+  Positioned(top: -200, right: -80, child: _decorativeCircle(340,Color.fromARGB(255, 100, 137, 68))), 
+  Positioned(bottom: -170, left: -80, child: _decorativeCircle(300,Color.fromARGB(255, 100, 137, 68))), 
+  Positioned(right: -80, bottom: -180, child: _decorativeCircle(300,Color.fromARGB(255, 7, 47, 33))), 
+
+                SingleChildScrollView(
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                    child: IntrinsicHeight(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center, // Center content vertically
+                        crossAxisAlignment: CrossAxisAlignment.center, // Center content horizontally
+                        children: [
+                          // Logo & Title
+                          Padding(
+                            padding: const EdgeInsets.only(top: 16, left: 30),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start, 
+                              children: [
+                                Image.asset(
+                                  'assets/Logo.png',
+                                  height: 110,
+                                ),
+                                const SizedBox(width: 0),
+                                Text(
+                                  "FarmFlow",
+                                  style: GoogleFonts.audiowide(
+                                    fontSize: 35,
+                                    fontWeight: FontWeight.bold,
+                                    color: const Color(0xFF02270A),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          const SizedBox(height: 20), // Added spacing
+
+                          // Form Fields
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center, // Center form fields
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                _buildTextField(_emailController, "Email"),
+                                _buildPasswordField(),
+
+                                // Remember Me Checkbox
+                              Padding(
+  padding: const EdgeInsets.only(left: 0), 
+  child: Row(
+    mainAxisAlignment: MainAxisAlignment.start, 
+    children: [
+      Checkbox(
+        value: _rememberMe,
+        onChanged: (value) {
+          setState(() {
+            _rememberMe = value ?? false;
+          });
+        },
+        checkColor: Colors.black,
+        activeColor: Colors.white,
+      ),
+      const Text(
+        "Remember Me",
+        style: TextStyle(
+          color: Colors.black,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    ],
+  ),
+),
+                                const SizedBox(height: 10),
+
+                                // Login Button
+                                SizedBox(
+                                  width: 110,
+                                  height: 45,
+                                  child: ElevatedButton(
+                                    onPressed: _isLoading ? null : () => _login(context),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: const Color.fromARGB(255, 2, 45, 11),
+                                      foregroundColor: Colors.white,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(25),
+                                      ),
+                                    ),
+                                    child: _isLoading
+                                        ? const CircularProgressIndicator(color: Colors.white)
+                                        : const Text(
+                                            "Login",
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                  ),
+                                ),
+
+                                // Signup Redirect
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => const SignUpScreen()),
+                                    );
+                                  },
+                                  child: const Text.rich(
+    TextSpan(
+      text: "Don't have an account? ",
+      style: TextStyle(
+        color: Colors.black,
+        fontSize: 14,
+      ),
+      children: [
+        TextSpan(
+          text: "Sign Up",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            decoration: TextDecoration.underline,
+            decorationColor: Colors.black,
+          ),
+        ),
+      ],
+    ),
+  ),
+),
+
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+      ),
+    ),
+  );
 }
+
+Widget _decorativeCircle(double size, Color color) {
+  return _showCircles
+      ? Container(
+          width: size,
+          height: size,
+          decoration: BoxDecoration(
+            color: color,
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: const Color.fromARGB(74, 0, 0, 0),
+                blurRadius: 17,
+                offset: Offset(-2, -9),
+              ),
+            ],
+          ),
+        )
+      : SizedBox(); // Add an alternative return value if _showCircles is false
+}
+}
+
