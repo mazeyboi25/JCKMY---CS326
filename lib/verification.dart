@@ -69,7 +69,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
 
   Future<void> _resendCode() async {
   setState(() {
-    _canResend = false;
+    _canResend = false; // Disable button while processing
   });
 
   try {
@@ -87,6 +87,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
 
     _showMessage("Sending a new code to $storedEmail...");
 
+    // Send a POST request to the backend
     var response = await http.post(
       Uri.parse("https://tionsns.pythonanywhere.com/api/resend/"),
       headers: {
@@ -99,26 +100,17 @@ class _VerificationScreenState extends State<VerificationScreen> {
     print("Response status: ${response.statusCode}");
     print("Response body: ${response.body}");
 
-    var responseData = jsonDecode(response.body);
-
     if (response.statusCode == 200) {
-      _showMessage(responseData['message'] ?? "Resent verification code! $storedEmail");
+      var responseData = jsonDecode(response.body);
+      _showMessage(responseData['message'] ?? "Verification code resent to $storedEmail.");
     } else {
+      var responseData = jsonDecode(response.body);
       _showMessage(responseData['message'] ?? "Failed to resend code", isError: true);
     }
   } catch (e) {
     print("Error: $e");
     _showMessage("An error occurred. Please try again.", isError: true);
   }
-
-  // Re-enable the resend button after 15 seconds
-  Future.delayed(Duration(seconds: 15), () {
-    if (mounted) {
-      setState(() {
-        _canResend = true;
-      });
-    }
-  });
 
   // Re-enable the resend button after 15 seconds
   Future.delayed(Duration(seconds: 15), () {
@@ -238,15 +230,27 @@ Widget build(BuildContext context) {
               ),
               const SizedBox(height: 13),
               TextButton(
-                onPressed: _canResend ? _resendCode : null,
-                child: Text(
-                  "Resend Code",
-                  style: GoogleFonts.mulish(
-                    fontWeight: FontWeight.bold,
-                    color: _canResend ? Colors.blue : const Color.fromARGB(255, 0, 0, 0),
-                  ),
-                ),
-              ),
+               onPressed: _canResend
+              ? () {
+               _resendCode(); // Call your function
+               setState(() {
+               _canResend = false; // Disable button after click
+              });
+              Future.delayed(const Duration(seconds: 1), () {
+            setState(() {
+               _canResend = true; // Re-enable after delay
+            });
+          });
+        }
+            : null,
+        child: Text(
+       "Resend Code",
+       style: GoogleFonts.mulish(
+      fontWeight: FontWeight.bold,
+      color: _canResend ? Colors.blue : Colors.black,
+    ),
+  ),
+)
             ],
           ),
         ),

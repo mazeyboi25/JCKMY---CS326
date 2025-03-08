@@ -74,10 +74,10 @@ Widget build(BuildContext context) {
                 bottomRight: Radius.circular(50),
               ),
               child: Container(
-                height: 114, // Adjusted for better spacing
-                color: const Color(0xFF02270A),
+                height: 114, 
+                color: Color(0xFF052419),
                 child: Padding(
-                  padding: const EdgeInsets.only(left: 5, top: 37), // Moves everything left
+                  padding: const EdgeInsets.only(left: 5, top: 37), 
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -119,7 +119,7 @@ Widget build(BuildContext context) {
             height: 73,
             width: double.infinity,
             decoration: const BoxDecoration(
-              color: Color(0xFF02270A),
+              color: Color(0xFF052419),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -243,7 +243,7 @@ class _FloatingIconButtonState extends State<FloatingIconButton>
                           height: 50,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: const Color.fromARGB(255, 229, 234, 229),
+                            color: const Color.fromARGB(255, 220, 227, 220),
                             boxShadow: [
                               BoxShadow(
                                 color: Colors.black26,

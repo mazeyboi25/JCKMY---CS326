@@ -200,7 +200,7 @@ Widget build(BuildContext context) {
           labelText: label,
           filled: true,
           fillColor: Colors.grey.shade300,
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
           contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
           suffixIcon: isPassword
               ? IconButton(

@@ -141,8 +141,8 @@ final FocusNode _passwordFocusNode = FocusNode();
           boxShadow: [
             BoxShadow(
               color: Colors.black26,
-              blurRadius: 10,
-              offset: Offset(-4, 1),
+              blurRadius: 12,
+              offset: Offset(-5, 4),
             ),
           ],
         ),
@@ -169,8 +169,8 @@ final FocusNode _passwordFocusNode = FocusNode();
           boxShadow: [
             BoxShadow(
               color: Colors.black26,
-              blurRadius: 10,
-              offset: Offset(-2, 2),
+              blurRadius: 13,
+              offset: Offset(-5, 4),
             ),
           ],
         ),
@@ -238,11 +238,18 @@ Widget build(BuildContext context) {
                                 ),
                                 const SizedBox(width: 5),
                                 Text(
-                                  "FarmFlow",
-                                  style: GoogleFonts.audiowide(
-                                    fontSize: 35,
-                                    fontWeight: FontWeight.bold,
-                                    color: const Color(0xFF02270A),
+                                    "FarmFlow",
+                                     style: GoogleFonts.audiowide(
+                                     fontSize: 35,
+                                     fontWeight: FontWeight.bold,
+                                     color: const Color(0xFF02270A),
+                                   shadows: [
+                                          Shadow(
+                                          offset: Offset(-4, 4), // Moves the shadow to the left
+                                          blurRadius: 5, // Adjust blur for a softer effect
+                                          color: Colors.black.withOpacity(0.3), // Adjust shadow color and opacity
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ],
@@ -297,8 +304,8 @@ Widget build(BuildContext context) {
                                     boxShadow: [
                                       BoxShadow(
                                         color: Colors.black.withOpacity(0.3), 
-                                        offset: Offset(-4, 4), 
-                                        blurRadius: 6,
+                                        offset: Offset(-5, 4), 
+                                        blurRadius: 7,
                                         spreadRadius: 1, 
                                       ),
                                     ],
