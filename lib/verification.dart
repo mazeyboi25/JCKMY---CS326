@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:pinput/pinput.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'dart:async';
 import 'sign_up_introscreen.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class VerificationScreen extends StatefulWidget {
   final String email;
@@ -18,7 +18,9 @@ class VerificationScreen extends StatefulWidget {
 class _VerificationScreenState extends State<VerificationScreen> {
   final TextEditingController _codeController = TextEditingController();
   bool _isVerifying = false;
-  bool _canResend = false;
+  bool _canResend = true;
+  int _resendTimer = 0;
+  Timer? _timer;
 
   Future<void> verifyCode() async {
     if (_codeController.text.trim().isEmpty) {
@@ -26,9 +28,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
       return;
     }
 
-    setState(() {
-      _isVerifying = true;
-    });
+    setState(() => _isVerifying = true);
 
     try {
       var response = await http.post(
@@ -46,14 +46,13 @@ class _VerificationScreenState extends State<VerificationScreen> {
       var responseData = jsonDecode(response.body);
 
       if (response.statusCode == 200) {
-  _showMessage("Verification successful! Redirecting...");
-
-  Future.delayed(Duration(seconds: 2), () {
-    Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(builder: (context) => IntroScreen2()),
-      (route) => false,
-    );
-  });
+        _showMessage("Verification successful! Redirecting...");
+        Future.delayed(const Duration(seconds: 2), () {
+          Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => IntroScreen2()),
+            (route) => false,
+          );
+        });
       } else {
         _showMessage(responseData['message'] ?? "Invalid verification code", isError: true);
         _codeController.clear();
@@ -62,65 +61,46 @@ class _VerificationScreenState extends State<VerificationScreen> {
       _showMessage("An error occurred. Please try again.", isError: true);
     }
 
-    setState(() {
-      _isVerifying = false;
-    });
+    setState(() => _isVerifying = false);
   }
 
   Future<void> _resendCode() async {
-  setState(() {
-    _canResend = false; // Disable button while processing
-  });
+    setState(() {
+      _canResend = false;
+      _resendTimer = 5;
+    });
 
-  try {
-    // Retrieve stored email from SharedPreferences
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? storedEmail = prefs.getString('email');
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (_resendTimer > 0) {
+        setState(() => _resendTimer--);
+      } else {
+        timer.cancel();
+        setState(() => _canResend = true);
+      }
+    });
 
-    if (storedEmail == null || storedEmail.isEmpty) {
-      _showMessage("No stored email found. Please sign in again.", isError: true);
-      setState(() {
-        _canResend = true;
-      });
-      return;
-    }
+    try {
+      _showMessage("Sending a new code to ${widget.email}...");
 
-    _showMessage("Sending a new code to $storedEmail...");
+      var response = await http.post(
+        Uri.parse("https://tionsns.pythonanywhere.com/api/resend/"),
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: jsonEncode({"email": widget.email}),
+      );
 
-    // Send a POST request to the backend
-    var response = await http.post(
-      Uri.parse("https://tionsns.pythonanywhere.com/api/resend/"),
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json"
-      },
-      body: jsonEncode({"email": storedEmail}),
-    );
-
-    print("Response status: ${response.statusCode}");
-    print("Response body: ${response.body}");
-
-    if (response.statusCode == 200) {
       var responseData = jsonDecode(response.body);
-      _showMessage(responseData['message'] ?? "Verification code resent to $storedEmail.");
-    } else {
-      var responseData = jsonDecode(response.body);
-      _showMessage(responseData['message'] ?? "Failed to resend code", isError: true);
+      if (response.statusCode == 200) {
+        _showMessage(responseData['message'] ?? "Verification code resent to ${widget.email}.");
+      } else {
+        _showMessage(responseData['message'] ?? "Failed to resend code", isError: true);
+      }
+    } catch (e) {
+      _showMessage("An error occurred. Please try again.", isError: true);
     }
-  } catch (e) {
-    print("Error: $e");
-    _showMessage("An error occurred. Please try again.", isError: true);
   }
-
-  // Re-enable the resend button after 15 seconds
-  Future.delayed(Duration(seconds: 15), () {
-    if (mounted) {
-      setState(() {
-        _canResend = true;
-      });
-    }
-  });
-}
 
   void _showMessage(String message, {bool isError = false}) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -130,7 +110,6 @@ class _VerificationScreenState extends State<VerificationScreen> {
       ),
     );
   }
-
 
   @override
 Widget build(BuildContext context) {
@@ -216,7 +195,7 @@ Widget build(BuildContext context) {
                   onPressed: _isVerifying ? null : verifyCode,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF02270A),
-                    padding: EdgeInsets.symmetric(vertical: 12, horizontal: 60),
+                    padding: EdgeInsets.symmetric(vertical: 12, horizontal: 55),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30), 
                       side: BorderSide(color: Colors.white, width: 2),
@@ -229,34 +208,19 @@ Widget build(BuildContext context) {
                 ),
               ),
               const SizedBox(height: 13),
-              TextButton(
-               onPressed: _canResend
-              ? () {
-               _resendCode(); // Call your function
-               setState(() {
-               _canResend = false; // Disable button after click
-              });
-              Future.delayed(const Duration(seconds: 1), () {
-            setState(() {
-               _canResend = true; // Re-enable after delay
-            });
-          });
-        }
-            : null,
-        child: Text(
-       "Resend Code",
-       style: GoogleFonts.mulish(
-      fontWeight: FontWeight.bold,
-      color: _canResend ? Colors.blue : Colors.black,
-    ),
-  ),
-)
-            ],
+            GestureDetector(
+                  onTap: _canResend ? _resendCode : null,
+                  child: Text(
+                    _canResend ? "Resend Code" : "Resend in $_resendTimer s",
+                    style: GoogleFonts.mulish(fontWeight: FontWeight.bold, color: _canResend ? Colors.blue : Colors.grey, decoration: _canResend ? TextDecoration.underline : null),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
-    ),
-  );
-}
+    );
+  }
 }
 
