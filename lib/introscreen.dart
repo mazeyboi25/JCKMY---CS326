@@ -121,55 +121,35 @@ class _IntroScreenState extends State<IntroScreen> {
 }
 
 class LS extends StatelessWidget {
-  const LS({super.key});
+  @override
+  Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
 
-   @override
-Widget build(BuildContext context) {
-  return Scaffold(
-    body: Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage("assets/bg.png"), // Background image
-          fit: BoxFit.cover,
-        ),
-      ),
-      child: Stack(
-        children: [
-          Positioned(
-            bottom: 300, 
-            left: 0,
-            right: -22,
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: Text(
-                "FarmFlow",
-                style: GoogleFonts.audiowide(
-                  fontSize: 48,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF02270A),
-                  letterSpacing: 1.0,
-                  shadows: [
-                    Shadow(
-                      blurRadius: 10.0,
-                      color: Colors.black.withOpacity(0.5),
-                      offset: Offset(2, 2),
-                    ),
-                  ],
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ),
+    return Scaffold(
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("assets/bg.png"),
+            fit: BoxFit.cover,
           ),
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  " ",
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
+        ),
+        child: Stack(
+          children: [
+            Positioned(
+              bottom: 300, 
+              left: 0,
+              right: screenWidth * -0.05, 
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: Text(
+                  "FarmFlow",
+                  style: GoogleFonts.audiowide(
+                    fontSize: screenWidth * 0.12, 
+                    color: Color(0xFF02270A),
+                    letterSpacing: 1.0,
                     shadows: [
                       Shadow(
                         blurRadius: 10.0,
@@ -178,91 +158,76 @@ Widget build(BuildContext context) {
                       ),
                     ],
                   ),
+                  textAlign: TextAlign.center,
                 ),
-              ],
+              ),
             ),
-          ),
-          Positioned(
-            bottom: 162, 
-            left: 35,
-            right: 33,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.5),
-                        offset: Offset(-6, 6), // Left and below shadow
-                        blurRadius: 6.0,
-                      ),
-                    ],
-                    borderRadius: BorderRadius.circular(30), // Match button shape
-                  ),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context, MaterialPageRoute(builder: (context) => LoginScreen()));
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color.fromARGB(255, 2, 48, 12),
-                      padding: EdgeInsets.symmetric(horizontal: 40, vertical: 13),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                        side: BorderSide(color: Colors.white, width: 1),
-                      ),
-                    ),
-                    child: Text(
-                      "LOG IN",
-                      style: GoogleFonts.mulish(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.5),
-                        offset: Offset(-6, 6), // Left and below shadow
-                        blurRadius: 6.0,
-                      ),
-                    ],
-                    borderRadius: BorderRadius.circular(30), // Match button shape
-                  ),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context, MaterialPageRoute(builder: (context) => SignUpScreen()));
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color.fromARGB(255, 8, 55, 39),
-                      padding: EdgeInsets.symmetric(horizontal: 32, vertical: 13),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                        side: BorderSide(color: Colors.white, width: 1),
-                      ),
-                    ),
-                    child: Text(
-                      "SIGN UP",
-                      style: GoogleFonts.mulish(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+
+            Positioned(
+              bottom: screenHeight * 0.22, 
+              left: screenWidth * 0.08,
+              right: screenWidth * 0.05,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  _buildButton(context, "LOG IN", Color(0xFF02300C), () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => LoginScreen()),
+                    );
+                  }),
+                  _buildButton(context, "SIGN UP", Color(0xFF083727), () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => SignUpScreen()),
+                    );
+                  }),
+                ],
+              ),
             ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildButton(BuildContext context, String text, Color color, VoidCallback onPressed) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final buttonPadding = EdgeInsets.symmetric(
+      horizontal: screenWidth * 0.1,
+      vertical: 13,
+    );
+
+    return Container(
+      decoration: BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.5),
+            offset: Offset(-6, 6),
+            blurRadius: 6.0,
           ),
         ],
+        borderRadius: BorderRadius.circular(30),
       ),
-    ),
-  );
-}
+      child: ElevatedButton(
+        onPressed: onPressed,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: color,
+          padding: buttonPadding,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
+            side: BorderSide(color: Colors.white, width: 1),
+          ),
+        ),
+        child: Text(
+          text,
+          style: GoogleFonts.mulish(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+      ),
+   );
+  }
 }
