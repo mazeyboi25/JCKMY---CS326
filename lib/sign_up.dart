@@ -20,6 +20,32 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _confirmPasswordController = TextEditingController();
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
+  bool _isLoading = false;
+
+   @override
+  void initState() {
+    super.initState();
+    _loadSavedData();
+  }
+
+   Future<void> _loadSavedData() async {
+    final prefs = await SharedPreferences.getInstance();
+    _usernameController.text = prefs.getString('user_username') ?? '';
+    _emailController.text = prefs.getString('user_email') ?? '';
+    _passwordController.text = prefs.getString('user_password') ?? '';
+    _confirmPasswordController.text = prefs.getString('user_confirm_password') ?? '';
+  }
+
+  Future<void> _clearSavedData({bool verified = false}) async {
+    final prefs = await SharedPreferences.getInstance();
+    if (verified) {
+      await prefs.remove('user_username');
+      await prefs.remove('user_email');
+      await prefs.remove('user_password');
+      await prefs.remove('user_confirm_password');
+    }
+  }
+
 
   Future<void> signUpUser() async {
   if (!_formKey.currentState!.validate()) return;
@@ -28,11 +54,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
   String email = _emailController.text.trim();
   String password = _passwordController.text.trim();
   String confirmPassword = _confirmPasswordController.text.trim();
-
+  
   if (password != confirmPassword) {
     _showMessage("Passwords do not match", isError: true);
     return;
   }
+
+  setState(() => _isLoading = true);
 
   try {
     var response = await http.post(
@@ -49,35 +77,38 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
 
     var responseData = jsonDecode(response.body);
-    print("Response Data: $responseData"); // Debugging
-
+    print("Response Data: $responseData"); 
     if (response.statusCode == 201) {
-      String? message = responseData["message"]; // Extract success message
-      String? token = responseData["token"]; // Extract token
+      String? message = responseData["message"]; 
+      String? token = responseData["token"]; 
 
       if (token != null) {
         // Store email and token in SharedPreferences
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('user_email', email);
         await prefs.setString('user_token', token);
+        await prefs.setString('user_username', username);
+        await prefs.setString('user_password', password);
       }
 
       _showMessage(message ?? "User registered successfully. Check your email for verification.");
       
-      Future.delayed(Duration(seconds: 1), () {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) => VerificationScreen(email: email)),
-        );
-      });
+      Future.delayed(const Duration(seconds: 1), () async {
+          await _clearSavedData(verified: true); 
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => VerificationScreen(email: email)),
+          );
+        });
     } else {
       _showMessage(responseData['message'] ?? "Sign Up Failed", isError: true);
     }
   } catch (e) {
-    print("Sign-up Error: $e"); // Debugging
+    print("Sign-up Error: $e"); 
     _showMessage("An error occurred. Please try again.", isError: true);
   }
+  setState(() => _isLoading = false);
 }
 
 
@@ -152,14 +183,16 @@ Widget build(BuildContext context) {
                           child: ElevatedButton(
                             onPressed: signUpUser,
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+                              backgroundColor: const Color.fromARGB(194, 255, 255, 255),
                               foregroundColor: const Color(0xFF02270A),
                               padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 40),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(25),
                               ),
                             ),
-                            child: Text(
+                            child: _isLoading
+                      ? CircularProgressIndicator(color: const Color.fromARGB(171, 255, 255, 255))
+                      :Text(
             "SIGN UP",
             style: GoogleFonts.mulish(
               fontSize: 16,

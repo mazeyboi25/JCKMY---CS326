@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'sign_up_introscreen.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'sign_up.dart';
 
 class VerificationScreen extends StatefulWidget {
   final String email;
@@ -114,113 +115,144 @@ class _VerificationScreenState extends State<VerificationScreen> {
   @override
 Widget build(BuildContext context) {
   return Scaffold(
-    body: Container(
-      width: double.infinity,
-      height: double.infinity,
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage("assets/VERIFICATION.png"),
-          fit: BoxFit.cover, 
-        ),
-      ),
-      child: Center(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Image.asset("assets/Farmflow_logo.png", height: 100), 
-              const SizedBox(height: 0),
-                   Text(
-                   "Verification Code",
+    body: Stack(
+      children: [
+        Container(
+          width: double.infinity,
+          height: double.infinity,
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage("assets/VERIFICATION.png"),
+              fit: BoxFit.cover, 
+            ),
+          ),
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Image.asset("assets/Farmflow_logo.png", height: 100), 
+                  const SizedBox(height: 0),
+                  Text(
+                    "Verification Code",
                     style: GoogleFonts.inter(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: const Color.fromARGB(255, 2, 29, 9),
-                    shadows: [
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: const Color.fromARGB(255, 2, 29, 9),
+                      shadows: [
                         Shadow(
-                          color: Colors.black.withOpacity(0.3), // Shadow color
-                          offset: Offset(-3, 2), // Slight left and bottom shadow
-                         blurRadius: 5, // Soft shadow effect
-                         ),
+                          color: Colors.black.withOpacity(0.3),
+                          offset: const Offset(-3, 2),
+                          blurRadius: 5,
+                        ),
                       ],
                     ),
                   ),
-              const SizedBox(height: 5),
-              Text(
-                "Enter the verification code sent to ${widget.email}",
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 14, color: const Color.fromARGB(255, 0, 0, 0)),
-              ),
-              const SizedBox(height: 20),
-              Pinput(
-                controller: _codeController,
-                length: 6,
-                keyboardType: TextInputType.number,
-                showCursor: true,
-                defaultPinTheme: PinTheme(
-                  width: 50,
-                  height: 60,
-                  textStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[300],
-                    border: Border.all(color: Colors.grey),
-                    borderRadius: BorderRadius.circular(10),
-                    boxShadow: [
-                                BoxShadow(
-                                color: Colors.black.withOpacity(0.2), 
-                                offset: Offset(-5, 6), 
-                                blurRadius: 6,
-                                spreadRadius: 1, 
-                                  ),
-                                ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 30),
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(30),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.3), 
-                      offset: Offset(-5, 4), 
-                      blurRadius: 6,
-                      spreadRadius: 1, 
+                  const SizedBox(height: 5),
+                  Text(
+                    "Enter the verification code sent to ${widget.email}",
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 14, 
+                      color: Color.fromARGB(255, 0, 0, 0),
                     ),
-                  ],
-                ),
-                child: ElevatedButton(
-                  onPressed: _isVerifying ? null : verifyCode,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF02270A),
-                    padding: EdgeInsets.symmetric(vertical: 12, horizontal: 55),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30), 
-                      side: BorderSide(color: Colors.white, width: 2),
+                  ),
+                  const SizedBox(height: 20),
+                  Pinput(
+                    controller: _codeController,
+                    length: 6,
+                    keyboardType: TextInputType.number,
+                    showCursor: true,
+                    defaultPinTheme: PinTheme(
+                      width: 50,
+                      height: 60,
+                      textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[300],
+                        border: Border.all(color: Colors.grey),
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.2),
+                            offset: const Offset(-5, 6),
+                            blurRadius: 6,
+                            spreadRadius: 1,
+                          ),
+                        ],
+                      ),
                     ),
-                    elevation: 0, 
                   ),
-                  child: _isVerifying
-                      ? CircularProgressIndicator(color: Colors.white)
-                      : Text("VERIFY", style: TextStyle(color: Colors.white, fontSize: 16)),
-                ),
+                  const SizedBox(height: 30),
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(30),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.3),
+                          offset: const Offset(-5, 4),
+                          blurRadius: 6,
+                          spreadRadius: 1,
+                        ),
+                      ],
+                    ),
+                    child: ElevatedButton(
+                      onPressed: _isVerifying ? null : verifyCode,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF02270A),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 12, horizontal: 55),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                          side: const BorderSide(color: Colors.white, width: 2),
+                        ),
+                        elevation: 0,
+                      ),
+                      child: _isVerifying
+                          ? const CircularProgressIndicator(color: Colors.white)
+                          : const Text(
+                              "VERIFY",
+                              style: TextStyle(color: Colors.white, fontSize: 16),
+                            ),
+                    ),
+                  ),
+                  const SizedBox(height: 13),
+                  GestureDetector(
+                    onTap: _canResend ? _resendCode : null,
+                    child: Text(
+                      _canResend ? "Resend Code" : "Resend in $_resendTimer s",
+                      style: GoogleFonts.mulish(
+                        fontWeight: FontWeight.bold,
+                        color: _canResend ? Colors.blue : Colors.grey,
+                        decoration: _canResend ? TextDecoration.underline : null,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(height: 13),
-            GestureDetector(
-                  onTap: _canResend ? _resendCode : null,
-                  child: Text(
-                    _canResend ? "Resend Code" : "Resend in $_resendTimer s",
-                    style: GoogleFonts.mulish(fontWeight: FontWeight.bold, color: _canResend ? Colors.blue : Colors.grey, decoration: _canResend ? TextDecoration.underline : null),
-                  ),
-                ),
-              ],
             ),
           ),
         ),
-      ),
-    );
-  }
+
+        // Back Button (Added Without Changing Layout)
+        Positioned(
+          top: 40,
+          left: 10,
+          child: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => SignUpScreen()),
+              );
+            },
+          ),
+        ),
+      ],
+    ),
+  );
+ }
 }
+
 

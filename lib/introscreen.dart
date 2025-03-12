@@ -121,6 +121,8 @@ class _IntroScreenState extends State<IntroScreen> {
 }
 
 class LS extends StatelessWidget {
+  const LS({super.key});
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
