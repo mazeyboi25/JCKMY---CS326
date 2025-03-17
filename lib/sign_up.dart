@@ -79,7 +79,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     var responseData = jsonDecode(response.body);
     print("Response Data: $responseData"); 
     if (response.statusCode == 201) {
-      String? message = responseData["message"]; 
+      String? message = responseData["message"];
       String? token = responseData["token"]; 
 
       if (token != null) {
@@ -87,8 +87,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('user_email', email);
         await prefs.setString('user_token', token);
-        await prefs.setString('user_username', username);
-        await prefs.setString('user_password', password);
       }
 
       _showMessage(message ?? "User registered successfully. Check your email for verification.");
