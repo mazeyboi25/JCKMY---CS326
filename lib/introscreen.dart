@@ -26,6 +26,7 @@ class _IntroScreenState extends State<IntroScreen> {
             title: "",
             description: "",
             imagePath: "assets/intro1.png",
+            isFirstPage: true,
             titleAlignment: Alignment.center,
             descriptionAlignment: Alignment.center,
             buttonAlignment: Alignment.bottomCenter,
@@ -42,7 +43,6 @@ class _IntroScreenState extends State<IntroScreen> {
             title: "",
             description: " ",
             imagePath: "assets/intro3.png",
-            isLastPage: true,
             titleAlignment: Alignment.topLeft,
             descriptionAlignment: Alignment.center,
             buttonAlignment: Alignment.bottomCenter,
@@ -59,7 +59,7 @@ class _IntroScreenState extends State<IntroScreen> {
     required Alignment titleAlignment,
     required Alignment descriptionAlignment,
     required Alignment buttonAlignment,
-    bool isLastPage = false,
+    bool isFirstPage = false,
   }) {
     return Container(
       decoration: BoxDecoration(
@@ -99,7 +99,7 @@ class _IntroScreenState extends State<IntroScreen> {
               ),
             ),
           ),
-          if (isLastPage)
+          if (isFirstPage)
             Align(
               alignment: buttonAlignment,
               child: Padding(
