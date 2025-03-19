@@ -77,6 +77,11 @@ final FocusNode _passwordFocusNode = FocusNode();
     }
   }
 
+int _failedAttempts = 0;
+final int _maxAttempts = 5;
+bool _isLocked = false;
+final _lockoutDuration = 60; // Lockout duration in seconds
+
   Future<void> _login(BuildContext context) async {
     String email = _emailController.text.trim();
     String password = _passwordController.text.trim();
@@ -101,12 +106,21 @@ final FocusNode _passwordFocusNode = FocusNode();
 
       if (response.statusCode == 200) {
         _showMessage("Login Successful!");
+        _failedAttempts = 0;
         await Future.delayed(Duration(seconds: 0));
         await _saveCredentials();
         Navigator.pushReplacement(
           context, 
           MaterialPageRoute(builder: (context) => HomeScreen()),
         );
+        _failedAttempts++;
+    if (_failedAttempts >= _maxAttempts) {
+      _isLocked = true;
+      _showMessage("Too many failed attempts. Try again later.");
+      Future.delayed(Duration(seconds: _lockoutDuration), () {
+        setState(() => _isLocked = false);
+      });
+    }
       } else {
         _showError(responseData['message'] ?? "Invalid email or password.");
       }

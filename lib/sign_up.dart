@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'verification.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -25,27 +24,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
    @override
   void initState() {
     super.initState();
-    _loadSavedData();
   }
-
-   Future<void> _loadSavedData() async {
-    final prefs = await SharedPreferences.getInstance();
-    _usernameController.text = prefs.getString('user_username') ?? '';
-    _emailController.text = prefs.getString('user_email') ?? '';
-    _passwordController.text = prefs.getString('user_password') ?? '';
-    _confirmPasswordController.text = prefs.getString('user_confirm_password') ?? '';
-  }
-
-  Future<void> _clearSavedData({bool verified = false}) async {
-    final prefs = await SharedPreferences.getInstance();
-    if (verified) {
-      await prefs.remove('user_username');
-      await prefs.remove('user_email');
-      await prefs.remove('user_password');
-      await prefs.remove('user_confirm_password');
-    }
-  }
-
 
   Future<void> signUpUser() async {
   if (!_formKey.currentState!.validate()) return;
@@ -90,15 +69,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       }
 
       _showMessage(message ?? "User registered successfully. Check your email for verification.");
-      
-      Future.delayed(const Duration(seconds: 1), () async {
-          await _clearSavedData(verified: true); 
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => VerificationScreen(email: email)),
-          );
-        });
+  
     } else {
       _showMessage(responseData['message'] ?? "Sign Up Failed", isError: true);
     }
@@ -109,6 +80,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
   setState(() => _isLoading = false);
 }
 
+String? _validateEmail(String? value) {
+  if (value == null || value.isEmpty) {
+    return 'Please enter your email';
+  }
+  if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
+    return 'Please enter a valid email address';
+  }
+  return null;
+}
+
+String? _validatePassword(String? value) {
+  if (value == null || value.isEmpty) {
+    return 'Please enter your password';
+  }
+  if (value.length < 6) {
+    return 'Password must be at least 6 characters';
+  }
+  return null;
+}
 
 void _showMessage(String message, {bool isError = false}) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -220,45 +210,56 @@ Widget build(BuildContext context) {
 }
 
 
-  Widget _buildTextField(TextEditingController controller, String label, [TextInputType keyboardType = TextInputType.text, bool obscureText = false, bool isPassword = false]) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: TextFormField(
-        controller: controller,
-        keyboardType: keyboardType,
-        obscureText: obscureText,
-        decoration: InputDecoration(
-          labelText: label,
-          filled: true,
-          fillColor: Colors.grey.shade300,
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-          contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-          suffixIcon: isPassword
-              ? IconButton(
-                  icon: Icon(
-                    obscureText ? Icons.visibility_off : Icons.visibility,
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      if (controller == _passwordController) {
-                        _obscurePassword = !_obscurePassword;
-                      } else if (controller == _confirmPasswordController) {
-                        _obscureConfirmPassword = !_obscureConfirmPassword;
-                      }
-                    });
-                  },
-                )
-              : null,
-        ),
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return "$label is required";
-          }
-          return null;
-        },
+  Widget _buildTextField(
+    TextEditingController controller,
+    String label,
+    [TextInputType keyboardType = TextInputType.text,
+    bool obscureText = false,
+    bool isPassword = false]) {
+    
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 8),
+    child: TextFormField(
+      controller: controller,
+      keyboardType: keyboardType,
+      obscureText: obscureText,
+
+      // Validator Logic
+      validator: (value) {
+        if (controller == _emailController) {
+          return _validateEmail(value);
+        } else if (controller == _passwordController) {
+          return _validatePassword(value);
+        }
+        return null; 
+      },
+
+      decoration: InputDecoration(
+        labelText: label,
+        filled: true,
+        fillColor: Colors.grey.shade300,
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+        contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+        suffixIcon: isPassword
+            ? IconButton(
+                icon: Icon(
+                  obscureText ? Icons.visibility_off : Icons.visibility,
+                ),
+                onPressed: () {
+                  setState(() {
+                    if (controller == _passwordController) {
+                      _obscurePassword = !_obscurePassword;
+                    } else if (controller == _confirmPasswordController) {
+                      _obscureConfirmPassword = !_obscureConfirmPassword;
+                    }
+                  });
+                },
+              )
+            : null,
       ),
-    );
-  }
+    ),
+  );
+}
 
   Widget _decorativeCircle(double size, Color color) {
     return Container(
