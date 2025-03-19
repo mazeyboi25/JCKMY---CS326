@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:project_test/verification.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -60,7 +61,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
     if (response.statusCode == 201) {
       String? message = responseData["message"];
       String? token = responseData["token"]; 
-
+      Future.delayed(const Duration(seconds: 2), () {
+      Navigator.push(
+      context,
+      MaterialPageRoute(
+      builder: (context) => VerificationScreen(
+        email: _emailController.text.trim(),
+      ),
+    ),
+  );
+});
       if (token != null) {
         // Store email and token in SharedPreferences
         final prefs = await SharedPreferences.getInstance();

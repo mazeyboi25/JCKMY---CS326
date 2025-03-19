@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'homescreen.dart';
 import 'sign_up.dart';
+import 'dart:async';
 
 
 class LoginScreen extends StatefulWidget {
@@ -20,21 +21,22 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _isLoading = false;
   bool _isPasswordVisible = false;
   bool _rememberMe = false;
-  bool _showCircles = true; 
+  bool _showCircles = true;
   final FocusNode _focusNode = FocusNode();
   final FocusNode _emailFocusNode = FocusNode();
-final FocusNode _passwordFocusNode = FocusNode();
+  final FocusNode _passwordFocusNode = FocusNode();
 
+  int _attempts = 0; // Added for tracking login attempts
+  bool _isButtonDisabled = false; // Added for cooldown logic
 
   @override
   void initState() {
     super.initState();
     _focusNode.addListener(_onFocusChange);
     _emailFocusNode.addListener(_onFocusChange);
-  _passwordFocusNode.addListener(_onFocusChange);
+    _passwordFocusNode.addListener(_onFocusChange);
     _loadSavedCredentials();
-    _emailController.addListener(() {
-    });
+    _emailController.addListener(() {});
   }
 
   void _onFocusChange() {
@@ -46,10 +48,10 @@ final FocusNode _passwordFocusNode = FocusNode();
   @override
   void dispose() {
     _emailFocusNode.removeListener(_onFocusChange);
-  _passwordFocusNode.removeListener(_onFocusChange);
+    _passwordFocusNode.removeListener(_onFocusChange);
     _focusNode.removeListener(_onFocusChange);
     _emailFocusNode.dispose();
-  _passwordFocusNode.dispose();
+    _passwordFocusNode.dispose();
     _focusNode.dispose();
     _emailController.dispose();
     super.dispose();
@@ -77,12 +79,12 @@ final FocusNode _passwordFocusNode = FocusNode();
     }
   }
 
-int _failedAttempts = 0;
-final int _maxAttempts = 5;
-bool _isLocked = false;
-final _lockoutDuration = 60; // Lockout duration in seconds
-
   Future<void> _login(BuildContext context) async {
+    if (_isButtonDisabled) {
+      _showError("Too many failed attepmts.Try again later after 1 minute"); 
+      return;
+    }
+
     String email = _emailController.text.trim();
     String password = _passwordController.text.trim();
 
@@ -106,22 +108,17 @@ final _lockoutDuration = 60; // Lockout duration in seconds
 
       if (response.statusCode == 200) {
         _showMessage("Login Successful!");
-        _failedAttempts = 0;
-        await Future.delayed(Duration(seconds: 0));
+        await Future.delayed(const Duration(seconds: 0));
         await _saveCredentials();
         Navigator.pushReplacement(
-          context, 
+          context,
           MaterialPageRoute(builder: (context) => HomeScreen()),
         );
-        _failedAttempts++;
-    if (_failedAttempts >= _maxAttempts) {
-      _isLocked = true;
-      _showMessage("Too many failed attempts. Try again later.");
-      Future.delayed(Duration(seconds: _lockoutDuration), () {
-        setState(() => _isLocked = false);
-      });
-    }
       } else {
+        _attempts++; // Increment attempts on failure
+        if (_attempts >= 3) {
+          _disableButtonForOneMinute();
+        }
         _showError(responseData['message'] ?? "Invalid email or password.");
       }
     } catch (e) {
@@ -130,6 +127,19 @@ final _lockoutDuration = 60; // Lockout duration in seconds
 
     setState(() {
       _isLoading = false;
+    });
+  }
+
+  void _disableButtonForOneMinute() {
+    setState(() {
+      _isButtonDisabled = true;
+    });
+
+    Timer(const Duration(minutes: 1), () {
+      setState(() {
+        _isButtonDisabled = false;
+        _attempts = 0; // Reset attempts after cooldown
+      });
     });
   }
 
