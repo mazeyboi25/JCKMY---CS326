@@ -424,7 +424,7 @@ Widget _decorativeCircle(double size, Color color) {
             ],
           ),
         )
-      : SizedBox(); // Add an alternative return value if _showCircles is false
+      : SizedBox(); 
 }
 }
 

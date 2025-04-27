@@ -24,13 +24,13 @@ class _VerificationScreenState extends State<VerificationScreen> {
   Timer? _timer;
 
   Future<void> verifyCode() async {
-    int _attempts = 0;
+    int attempts = 0;
     final int maxAttempts = 3;
-    if (_attempts >= maxAttempts) {
+    if (attempts >= maxAttempts) {
     _showMessage("Too many attempts. Try again later.");
     return;
   }
-  _attempts++;
+  attempts++;
 
     if (_codeController.text.trim().isEmpty) {
       _showMessage("Please enter the verification code", isError: true);

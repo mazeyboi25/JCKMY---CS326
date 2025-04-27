@@ -48,7 +48,6 @@ flutter:
     - assets/intro3.png
     - assets/intro1.png
     - assets/sign-up_bg.png
-    - assets/Logo.png
     - assets/app_CP.png
     - assets/Male User.png
     - assets/Location.png
@@ -59,6 +58,7 @@ flutter:
     - assets/sign_up_introscreen_elements/top_element.png
     - assets/Farmflow_logo.png
     - assets/VERIFICATION.png
+    - assets/Log_out.png
     
 
 flutter_icons:
