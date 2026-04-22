@@ -14,3 +14,5 @@ Continuous deployment from the main branch.
 - Revert to previous version using Git
 - Redeploy last stable build
 - Notify users if downtime occurs
+
+# https://jckmy-cs-326.vercel.app
