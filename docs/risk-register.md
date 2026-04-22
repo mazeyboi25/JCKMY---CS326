@@ -39,7 +39,7 @@
 ### Mitigation: Follow simple layout, test with users
 ### Contingency: Redesign screens based on feedback
 
-## 6. Data loss / database issues
+## 6. Data loss/database issues
 ### Likelihood: 2
 ### Impact: 5
 ### Risk Score: 10
@@ -62,3 +62,4 @@
 ### Owner: Git Manager
 ### Mitigation: Test deployment first, use reliable hosting
 ### Contingency: Rollback and redeploy
+
