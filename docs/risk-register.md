@@ -63,3 +63,4 @@
 ### Mitigation: Test deployment first, use reliable hosting
 ### Contingency: Rollback and redeploy
 
+![alt text](image.png)
