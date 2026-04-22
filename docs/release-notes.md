@@ -1,5 +1,5 @@
 # Release Notes v0.5
 
-- Added new feature → dev version
+- Added new feature (merged dev + feature)
 - Fixed bugs
-- Improved system
+- Improved system  
