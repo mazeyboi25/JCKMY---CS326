@@ -3,7 +3,7 @@
 ### Likelihood: 4
 ### Impact: 5
 ### Risk Score: 20
-### Oner: Backend Developer
+### Owner: Backend Developer
 ### Mitigation: Restrict to school emails, OTP verification, optional ID upload
 ### Contingency: Disable suspicious accounts, manual verification
 
