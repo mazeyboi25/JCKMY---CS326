@@ -1,4 +1,4 @@
-# Risk Score = Likelihood (1-5) * Impact (1 -5)
+# Risk Score = Likelihood (1-5) × Impact (1 -5)
 ## 1. Fake student accounts / invalid verification
 ### Likelihood: 4
 ### Impact: 5
