@@ -40,3 +40,5 @@ Based on app screens:
 - No critical bugs in login, posting, messaging
 - Listings display correctly
 - Users can complete full flow (login → browse → post → message)
+
+![alt text](image.png)
