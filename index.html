@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Campus Market placeholder marketplace for student buying, selling, chat, and profile flows."
+    />
+    <title>Campus Market</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="site-shell">
+      <aside class="desktop-panel" aria-label="Project preview">
+        <div class="brand-lockup">
+          <span class="cap-logo" aria-hidden="true"></span>
+          <span>Campus Market</span>
+        </div>
+        <h1>Campus Market</h1>
+        <p>Student-only listings for dorm finds, class gear, and quick campus meetups.</p>
+        <div class="preview-stats" aria-label="Marketplace status">
+          <span><strong id="listingCount">6</strong> listings</span>
+          <span><strong>4.8</strong> seller rating</span>
+          <span><strong>2 min</strong> demo flow</span>
+        </div>
+      </aside>
+
+      <section class="phone-stage" aria-label="Campus Market app preview">
+        <div class="phone-shell">
+          <div class="status-bar" aria-hidden="true">
+            <span>9:41</span>
+            <span class="status-icons">
+              <span></span>
+              <span></span>
+              <span></span>
+            </span>
+          </div>
+
+          <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+          <section class="app-view auth-view active" id="loginView" aria-labelledby="loginTitle">
+            <div class="auth-hero">
+              <span class="cap-logo large" aria-hidden="true"></span>
+              <h2 id="loginTitle">Campus Market</h2>
+            </div>
+            <form class="auth-panel" id="loginForm">
+              <h3>Log In</h3>
+              <p>Please sign in to continue.</p>
+              <label>
+                <span>E-mail</span>
+                <input id="emailInput" type="email" placeholder="Enter School Email" autocomplete="email" />
+              </label>
+              <label>
+                <span>Password</span>
+                <input id="passwordInput" type="password" placeholder="Enter Password" autocomplete="current-password" />
+              </label>
+              <button class="text-link" type="button">Forgot password?</button>
+              <button class="primary-action" type="submit">Log In</button>
+              <p class="form-note">Don't have an account? <button class="inline-button" type="button">Sign up</button></p>
+              <p class="form-error" id="loginError"></p>
+            </form>
+          </section>
+
+          <section class="app-view auth-view otp-view" id="otpView" aria-labelledby="otpTitle">
+            <button class="round-button back-button" data-go="loginView" aria-label="Back to login">
+              <span class="icon icon-back" aria-hidden="true"></span>
+            </button>
+            <div class="auth-hero compact">
+              <span class="cap-logo large" aria-hidden="true"></span>
+              <h2>Campus Market</h2>
+            </div>
+            <form class="auth-panel" id="otpForm">
+              <h3 id="otpTitle">OTP Verification</h3>
+              <p>Enter 4-digit code sent to your school email.</p>
+              <div class="otp-grid" aria-label="One time password">
+                <input inputmode="numeric" maxlength="1" aria-label="OTP digit 1" />
+                <input inputmode="numeric" maxlength="1" aria-label="OTP digit 2" />
+                <input inputmode="numeric" maxlength="1" aria-label="OTP digit 3" />
+                <input inputmode="numeric" maxlength="1" aria-label="OTP digit 4" />
+              </div>
+              <button class="primary-action" type="submit">Verify</button>
+              <p class="form-error" id="otpError"></p>
+            </form>
+            <div class="number-pad" aria-hidden="true">
+              <span>1</span><span>2</span><span>3</span>
+              <span>4</span><span>5</span><span>6</span>
+              <span>7</span><span>8</span><span>9</span>
+              <span></span><span>0</span><span>Back</span>
+            </div>
+          </section>
+
+          <section class="app-view app-screen" id="homeView" aria-labelledby="homeTitle">
+            <header class="top-bar">
+              <div>
+                <h2 id="homeTitle">Campus Market <span class="verified-dot" aria-label="Verified"></span></h2>
+              </div>
+              <button class="round-button" aria-label="Notifications">
+                <span class="icon icon-bell" aria-hidden="true"></span>
+              </button>
+            </header>
+
+            <div class="search-row">
+              <label class="search-box">
+                <span class="icon icon-search" aria-hidden="true"></span>
+                <input id="searchInput" type="search" placeholder="Search" />
+              </label>
+              <button class="filter-button" id="clearFilters" aria-label="Clear filters">
+                <span class="icon icon-sliders" aria-hidden="true"></span>
+              </button>
+            </div>
+
+            <div class="chip-row" id="categoryChips" aria-label="Categories"></div>
+            <div class="market-grid" id="marketGrid" aria-live="polite"></div>
+          </section>
+
+          <section class="app-view app-screen detail-screen" id="productView" aria-labelledby="productTitle">
+            <header class="top-bar overlay-bar">
+              <button class="round-button" data-go="homeView" aria-label="Back to home">
+                <span class="icon icon-back" aria-hidden="true"></span>
+              </button>
+              <button class="round-button save-current" aria-label="Save item">
+                <span class="icon icon-heart" aria-hidden="true"></span>
+              </button>
+            </header>
+            <div class="product-hero" id="productHero"></div>
+            <div class="detail-content">
+              <div class="image-dots" aria-hidden="true"><span></span><span></span><span></span></div>
+              <div class="title-row">
+                <div>
+                  <h2 id="productTitle">IKEA Table Lamp</h2>
+                  <p id="productDesc">25 inches tall, best for studying and secondhand use.</p>
+                </div>
+                <strong id="productPrice">P420</strong>
+              </div>
+              <button class="primary-action" id="buyButton">Buy now</button>
+              <button class="seller-row" id="sellerButton">
+                <span class="avatar mini"></span>
+                <span>
+                  <strong id="sellerName">Zayn Malik</strong>
+                  <small>4.5 rating</small>
+                </span>
+                <span class="icon icon-chevron" aria-hidden="true"></span>
+              </button>
+            </div>
+          </section>
+
+          <section class="app-view app-screen form-screen" id="sellView" aria-labelledby="sellTitle">
+            <header class="top-bar center-title">
+              <button class="round-button" data-go="homeView" aria-label="Back to home">
+                <span class="icon icon-back" aria-hidden="true"></span>
+              </button>
+              <h2 id="sellTitle">Sell Item</h2>
+              <span></span>
+            </header>
+            <form class="sell-form" id="sellForm">
+              <span class="field-title">Upload Images</span>
+              <div class="upload-row">
+                <button type="button"><span class="icon icon-upload" aria-hidden="true"></span> Select Item</button>
+                <button type="button"><span class="icon icon-camera" aria-hidden="true"></span> Use Camera</button>
+              </div>
+              <label>
+                <span>Title</span>
+                <input id="sellTitleInput" placeholder="Item name or listing title" required />
+              </label>
+              <label>
+                <span>Description</span>
+                <textarea id="sellDescInput" placeholder="Describe your item" required></textarea>
+              </label>
+              <label>
+                <span>Price</span>
+                <input id="sellPriceInput" inputmode="numeric" placeholder="Choose pricing" required />
+              </label>
+              <label>
+                <span>Category</span>
+                <select id="sellCategoryInput">
+                  <option>Electronics</option>
+                  <option>Clothes</option>
+                  <option>Dorm Items</option>
+                  <option>Textbooks</option>
+                  <option>Furniture</option>
+                </select>
+              </label>
+              <label>
+                <span>Condition</span>
+                <select id="sellConditionInput">
+                  <option>Used / Secondhand</option>
+                  <option>Like New</option>
+                  <option>New</option>
+                </select>
+              </label>
+              <button class="primary-action" type="submit">Post Listing</button>
+            </form>
+          </section>
+
+          <section class="app-view app-screen chat-screen" id="chatView" aria-labelledby="chatTitle">
+            <header class="chat-header">
+              <button class="round-button" data-go="homeView" aria-label="Back to home">
+                <span class="icon icon-back" aria-hidden="true"></span>
+              </button>
+              <span class="avatar mini"></span>
+              <div>
+                <h2 id="chatTitle">Zayn Malik</h2>
+                <small>4.5 rating</small>
+              </div>
+              <button class="round-button" aria-label="Chat options">
+                <span class="icon icon-more" aria-hidden="true"></span>
+              </button>
+            </header>
+            <div class="message-list" id="messageList" aria-live="polite"></div>
+            <div class="quick-replies">
+              <span>Quick Replies</span>
+              <button type="button" data-reply="Is this still available?">Is this still available?</button>
+              <button type="button" data-reply="Can we meet on campus?">Can we meet on campus?</button>
+            </div>
+            <form class="message-form" id="messageForm">
+              <input id="messageInput" placeholder="Type a message..." />
+              <button type="submit" aria-label="Send message">
+                <span class="icon icon-send" aria-hidden="true"></span>
+              </button>
+            </form>
+          </section>
+
+          <section class="app-view app-screen profile-screen" id="profileView" aria-labelledby="profileTitle">
+            <header class="profile-cover">
+              <button class="round-button" data-go="homeView" aria-label="Back to home">
+                <span class="icon icon-back" aria-hidden="true"></span>
+              </button>
+              <button class="round-button" aria-label="Settings">
+                <span class="icon icon-settings" aria-hidden="true"></span>
+              </button>
+            </header>
+            <div class="profile-card">
+              <span class="avatar large"></span>
+              <h2 id="profileTitle">Maya Santos</h2>
+              <p>Verified Student</p>
+              <strong>4.8 rating</strong>
+              <button class="primary-action small-action">Edit Profile</button>
+              <div class="profile-tabs" aria-label="Profile content">
+                <button class="active" type="button" aria-label="Listings"><span class="icon icon-grid" aria-hidden="true"></span></button>
+                <button type="button" aria-label="Cart"><span class="icon icon-cart" aria-hidden="true"></span></button>
+                <button type="button" aria-label="Favorites"><span class="icon icon-heart" aria-hidden="true"></span></button>
+              </div>
+              <div class="profile-listings" id="profileListings"></div>
+            </div>
+          </section>
+
+          <nav class="bottom-nav" aria-label="Primary navigation">
+            <button type="button" class="active" data-nav="homeView">
+              <span class="icon icon-home" aria-hidden="true"></span>
+              <span>Home</span>
+            </button>
+            <button type="button" data-nav="sellView">
+              <span class="icon icon-sell" aria-hidden="true"></span>
+              <span>Sell</span>
+            </button>
+            <button type="button" data-nav="chatView">
+              <span class="icon icon-chat" aria-hidden="true"></span>
+              <span>Chat</span>
+            </button>
+            <button type="button" data-nav="profileView">
+              <span class="icon icon-user" aria-hidden="true"></span>
+              <span>Profile</span>
+            </button>
+          </nav>
+        </div>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
