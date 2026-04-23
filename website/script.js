@@ -185,10 +185,9 @@ document.querySelector("#loginForm").addEventListener("submit", (event) => {
   const email = document.querySelector("#emailInput").value.trim();
   const password = document.querySelector("#passwordInput").value.trim();
   const error = document.querySelector("#loginError");
-  const schoolEmail = /@(school|campus|student|university)\.edu$/i.test(email) || /\.edu$/i.test(email);
 
-  if (!schoolEmail || !password) {
-    error.textContent = "Use a school .edu email and enter your password.";
+  if (!email || !password) {
+    error.textContent = "Enter any email and password to continue the demo.";
     return;
   }
 
