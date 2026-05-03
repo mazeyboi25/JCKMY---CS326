@@ -7,7 +7,6 @@ import 'homescreen.dart';
 import 'sign_up.dart';
 import 'dart:async';
 
-
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -81,7 +80,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> _login(BuildContext context) async {
     if (_isButtonDisabled) {
-      _showError("Too many failed attepmts.Try again later after 1 minute"); 
+      _showError("Too many failed attempts. Try again later after 1 minute.");
       return;
     }
 
@@ -107,9 +106,17 @@ class _LoginScreenState extends State<LoginScreen> {
       var responseData = jsonDecode(response.body);
 
       if (response.statusCode == 200) {
+        // Assuming the backend sends a 'token' in the response body
+        String token = responseData['token'];
+
+        // Save the token in SharedPreferences
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString('user_token', token);
+
         _showMessage("Login Successful!");
         await Future.delayed(const Duration(seconds: 0));
         await _saveCredentials();
+
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => HomeScreen()),
@@ -222,209 +229,206 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-
   @override
-Widget build(BuildContext context) {
-  return GestureDetector(
-    onTap: () {
-      FocusScope.of(context).unfocus(); // Dismiss the keyboard when tapping outside
-    },
-    child: Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            return Stack(
-              children: [
-                // Decorative Circles
-                Positioned(left: -100, top: -200, child: _decorativeCircle(340, Color.fromARGB(255, 7, 47, 33))),
-                Positioned(top: -200, right: -80, child: _decorativeCircle(340, Color.fromARGB(255, 100, 137, 68))),
-                Positioned(bottom: -170, left: -80, child: _decorativeCircle(300, Color.fromARGB(255, 100, 137, 68))),
-                Positioned(right: -80, bottom: -180, child: _decorativeCircle(300, Color.fromARGB(255, 7, 47, 33))),
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus(); // Dismiss the keyboard when tapping outside
+      },
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: SafeArea(
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return Stack(
+                children: [
+                  // Decorative Circles
+                  Positioned(left: -100, top: -200, child: _decorativeCircle(340, Color.fromARGB(255, 7, 47, 33))),
+                  Positioned(top: -200, right: -80, child: _decorativeCircle(340, Color.fromARGB(255, 100, 137, 68))),
+                  Positioned(bottom: -170, left: -80, child: _decorativeCircle(300, Color.fromARGB(255, 100, 137, 68))),
+                  Positioned(right: -80, bottom: -180, child: _decorativeCircle(300, Color.fromARGB(255, 7, 47, 33))),
 
-                SingleChildScrollView(
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                    child: IntrinsicHeight(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center, // Center content vertically
-                        crossAxisAlignment: CrossAxisAlignment.center, // Center content horizontally
-                        children: [
-                          // Logo & Title
-                          Padding(
-                            padding: const EdgeInsets.only(top: 16, left: 23),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Image.asset(
-                                  'assets/Farmflow_logo.png',
-                                  height: 70,
-                                ),
-                                const SizedBox(width: 5),
-                                Text(
+                  SingleChildScrollView(
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                      child: IntrinsicHeight(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center, // Center content vertically
+                          crossAxisAlignment: CrossAxisAlignment.center, // Center content horizontally
+                          children: [
+                            // Logo & Title
+                            Padding(
+                              padding: const EdgeInsets.only(top: 16, left: 23),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Image.asset(
+                                    'assets/Farmflow_logo.png',
+                                    height: 70,
+                                  ),
+                                  const SizedBox(width: 5),
+                                  Text(
                                     "FarmFlow",
-                                     style: GoogleFonts.audiowide(
-                                     fontSize: 35,
-                                     fontWeight: FontWeight.bold,
-                                     color: const Color(0xFF02270A),
-                                   shadows: [
-                                          Shadow(
+                                    style: GoogleFonts.audiowide(
+                                      fontSize: 35,
+                                      fontWeight: FontWeight.bold,
+                                      color: const Color(0xFF02270A),
+                                      shadows: [
+                                        Shadow(
                                           offset: Offset(-4, 4), // Moves the shadow to the left
                                           blurRadius: 5, // Adjust blur for a softer effect
                                           color: Colors.black.withOpacity(0.3), // Adjust shadow color and opacity
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-
-                          const SizedBox(height: 20),
-
-                          // Form Fields
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center, // Center form fields
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                _buildTextField(_emailController, "Email"),
-                                _buildPasswordField(),
-
-                                // Remember Me Checkbox
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 0),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Checkbox(
-                                        value: _rememberMe,
-                                        onChanged: (value) {
-                                          setState(() {
-                                            _rememberMe = value ?? false;
-                                          });
-                                        },
-                                        checkColor: Colors.black,
-                                        activeColor: Colors.white,
-                                      ),
-                                      const Text(
-                                        "Remember Me",
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.bold,
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-
-                                const SizedBox(height: 10),
-
-                                // Login Button with Shadow
-                                Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(25), 
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.black.withOpacity(0.3), 
-                                        offset: Offset(-5, 4), 
-                                        blurRadius: 7,
-                                        spreadRadius: 1, 
-                                      ),
-                                    ],
-                                  ),
-                                  child: SizedBox(
-                                    width: 130,
-                                    height: 45,
-                                    child: ElevatedButton(
-                                      onPressed: _isLoading ? null : () => _login(context),
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: const Color.fromARGB(255, 2, 45, 11),
-                                        foregroundColor: Colors.white,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(25), // Match shadow shape
-                                          side: BorderSide(color: Colors.white, width: 2),
-                                        ),
-                                        elevation: 0, // Disable default elevation to avoid double shadows
-                                      ),
-                                      child: _isLoading
-                                          ? const CircularProgressIndicator(color: Colors.white)
-                                          : Text(
-                                              "LOG IN",
-                                              style: GoogleFonts.mulish(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
+                                      ],
                                     ),
                                   ),
-                                ),
+                                ],
+                              ),
+                            ),
 
-                                // Signup Redirect
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(builder: (context) => const SignUpScreen()),
-                                    );
-                                  },
-                                  child: const Text.rich(
-                                    TextSpan(
-                                      text: "Don't have an account? ",
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 14,
-                                      ),
+                            const SizedBox(height: 20),
+
+                            // Form Fields
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 20),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center, // Center form fields
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  _buildTextField(_emailController, "Email"),
+                                  _buildPasswordField(),
+
+                                  // Remember Me Checkbox
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 0),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
                                       children: [
-                                        TextSpan(
-                                          text: "Sign Up",
+                                        Checkbox(
+                                          value: _rememberMe,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              _rememberMe = value ?? false;
+                                            });
+                                          },
+                                          checkColor: Colors.black,
+                                          activeColor: Colors.white,
+                                        ),
+                                        const Text(
+                                          "Remember Me",
                                           style: TextStyle(
+                                            color: Colors.black,
                                             fontWeight: FontWeight.bold,
-                                            decoration: TextDecoration.underline,
-                                            decorationColor: Colors.black,
                                           ),
                                         ),
                                       ],
                                     ),
                                   ),
-                                ),
-                              ],
+
+                                  const SizedBox(height: 10),
+
+                                  // Login Button with Shadow
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(25),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.3),
+                                          offset: Offset(-5, 4),
+                                          blurRadius: 7,
+                                          spreadRadius: 1,
+                                        ),
+                                      ],
+                                    ),
+                                    child: SizedBox(
+                                      width: 130,
+                                      height: 45,
+                                      child: ElevatedButton(
+                                        onPressed: _isLoading ? null : () => _login(context),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: const Color.fromARGB(255, 2, 45, 11),
+                                          foregroundColor: Colors.white,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(25), // Match shadow shape
+                                            side: BorderSide(color: Colors.white, width: 2),
+                                          ),
+                                          elevation: 0, // Disable default elevation to avoid double shadows
+                                        ),
+                                        child: _isLoading
+                                            ? const CircularProgressIndicator(color: Colors.white)
+                                            : Text(
+                                                "LOG IN",
+                                                style: GoogleFonts.mulish(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                      ),
+                                    ),
+                                  ),
+
+                                  // Signup Redirect
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => const SignUpScreen()),
+                                      );
+                                    },
+                                    child: const Text.rich(
+                                      TextSpan(
+                                        text: "Don't have an account? ",
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 14,
+                                        ),
+                                        children: [
+                                          TextSpan(
+                                            text: "Sign Up",
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              decoration: TextDecoration.underline,
+                                              decorationColor: Colors.black,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
-            );
-          },
+                ],
+              );
+            },
+          ),
         ),
       ),
-    ),
-  );
-}
+    );
+  }
 
-
-Widget _decorativeCircle(double size, Color color) {
-  return _showCircles
-      ? Container(
-          width: size,
-          height: size,
-          decoration: BoxDecoration(
-            color: color,
-            shape: BoxShape.circle,
-            boxShadow: [
-              BoxShadow(
-                color: const Color.fromARGB(74, 0, 0, 0),
-                blurRadius: 17,
-                offset: Offset(-2, -9),
-              ),
-            ],
-          ),
-        )
-      : SizedBox(); 
+  Widget _decorativeCircle(double size, Color color) {
+    return _showCircles
+        ? Container(
+            width: size,
+            height: size,
+            decoration: BoxDecoration(
+              color: color,
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: const Color.fromARGB(74, 0, 0, 0),
+                  blurRadius: 17,
+                  offset: Offset(-2, -9),
+                ),
+              ],
+            ),
+          )
+        : SizedBox();
+  }
 }
-}
-
