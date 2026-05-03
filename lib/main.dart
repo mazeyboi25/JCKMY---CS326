@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'introscreen.dart';
-import 'package:firebase_core/firebase_core.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(); 
   runApp(MyApp());
 }
 
@@ -44,7 +42,7 @@ class _SplashScreenState extends State<SplashScreen>
 
     _animation = CurvedAnimation(
       parent: _controller,
-      curve: Curves.elasticOut,
+      curve: Curves.elasticOut, // Bubble effect
     );
 
     Future.delayed(Duration(seconds: 3), () {
@@ -62,42 +60,42 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/app_CP.png'),
-            fit: BoxFit.cover,
-          ),
+Widget build(BuildContext context) {
+  return Scaffold(
+    body: Container(
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage('assets/app_CP.png'), // Background image
+          fit: BoxFit.cover,
         ),
-        child: Align(
-          alignment: Alignment.center,
-          child: ScaleTransition(
-            scale: _animation,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset(
-                  'assets/Farmflow_logo.png',
-                  width: 120,
-                  height: 120,
+      ),
+      child: Align(
+        alignment: Alignment.center,
+        child: ScaleTransition(
+          scale: _animation,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center, // Center align vertically
+            children: [
+              Image.asset(
+                'assets/Farmflow_logo.png',
+                width: 120,
+                height: 120,
+              ),
+              const SizedBox(height: 2), // Space between logo and text
+              Text(
+                "FarmFlow",
+                style: GoogleFonts.audiowide(
+                  fontSize: 45,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF94CA65),
                 ),
-                const SizedBox(height: 2),
-                Text(
-                  "FarmFlow",
-                  style: GoogleFonts.audiowide(
-                    fontSize: 45,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF94CA65),
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 }

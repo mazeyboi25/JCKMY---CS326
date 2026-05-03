@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
 import 'profile.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'crop_tracker_screen.dart';
-import 'marketplace_screen.dart';
-import 'pestmonitor_screen.dart';
-import 'weather_alert_screen.dart';
-
 
 void main() {
   runApp(const MyApp());
@@ -37,57 +32,22 @@ class _HomeScreenState extends State<HomeScreen> {
 
   /// Returns the appropriate screen widget
   Widget _getScreenBody() {
-  switch (activeScreen) {
-    case "Messages":
-      return const MessagesScreen();
-    case "Locations":
-      return const LocationsScreen();
-    case "Profile":
-      return const ProfileScreen();
-    default: // "Home"
-      return Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (_) => const CropTrackerScreen()));
-                },
-                child: const Text('Crop Tracker'),
-              ),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (_) => const MarketplaceScreen()));
-                },
-                child: const Text('Marketplace'),
-              ),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (_) => const PestMonitorScreen()));
-                },
-                child: const Text('Pest Monitor'),
-              ),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (_) => const WeatherAlertScreen()));
-                },
-                child: const Text('Weather Alert'),
-              ),
-            ],
+    switch (activeScreen) {
+      case "Messages":
+        return const MessagesScreen();
+      case "Locations":
+        return const LocationsScreen();
+      case "Profile":
+        return const ProfileScreen();
+      default:
+        return const Center(
+          child: Text(
+            "Home Screen",
+            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
           ),
-        ),
-      );
+        );
+    }
   }
-}
 
   void _handleFloat(String label) {
     if (mounted) {
