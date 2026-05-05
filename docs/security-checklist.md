@@ -18,3 +18,5 @@
 - Weak authentication (basic API key only)
 - No rate limiting
 - No encryption for sensitive data
+
+![alt text](image-3.png)
