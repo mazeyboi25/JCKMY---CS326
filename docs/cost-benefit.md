@@ -53,4 +53,6 @@ Annual cost = $900 + ($100 × 12) = $2100
 
 ## Recommendation
 
-The project provides moderate financial return and strong intangible benefits such as improved user experience and convenience. It is recommended to continue development and improve features to increase user adoption and long-term value.
+The project provides moderate financial return and strong intangible benefits 
+such as improved user experience and convenience. It is recommended to continue 
+development and improve features to increase user adoption and long-term value.
